@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-#from pymongo import MongoClient
 from time import sleep
 import csv
 import json
