@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from time import sleep
-from pymongo import MongoClient
+#from pymongo import MongoClient
 import csv
 import json
 index = 0
@@ -103,13 +103,13 @@ if __name__ == '__main__':
     filejson.write("["+"\n")
     rejson = []
     reader = open("pmcid.csv","r",encoding="utf-8")
-    Client = MongoClient('localhost',27017)
+    '''Client = MongoClient('localhost',27017)
     try:
         Client.drop_database("Library")
         print("clear successfully")
     except:
         print("delete !!!")
-        pass
+        pass'''
     i=0
     for line in reader:
         if i != 0:
@@ -128,11 +128,11 @@ if __name__ == '__main__':
                 filecsv.writerow([item['PMCID'],item['url'],captiontxt,(",".join(item['co-occurrence-words'])).replace("\"",""),item['co-occurrence-count']])
                 filejson.write(json.dumps(item)+",\n")
                 # create database Library
-                db = Client["Library"]
+                '''db = Client["Library"]
                 # create table
                 collection=db["PMIINFO"]
                 # inset into database
-                collection.insert(item)
+                collection.insert(item)'''
             sleep(1)
             #print(result)
         i = i + 1
