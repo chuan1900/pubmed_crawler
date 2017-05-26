@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Title of the document</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<style>
+    .table {
+        max-width: none;
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+        <h1>PMI SEARCH SYSTEM</h1>
+		<form class="form-horizontal">
+		  <div class="col-sm-10">
+			 <input type="text" class="form-control" name="searchinput" placeholder="Search ..." required>
+		  </div>
+		  <div class="col-sm-1">
+			<button type="button" class="btn btn-primary" id="searchbtn">Search</button>
+		  </div>
+		  <div class="col-sm-1">
+			<button type="button" class="btn btn-primary" id="showbtn">Show all datas</button>
+		  </div>
+		</form>
+    </div>
+    <div class="col-md-12" id = "divJson">
+        <h4 id="searchtitle">Search result</h4>
+        <table class="table table-striped">
+			<thead>
+				<tr>
+					<th style="width:10%">PMCID</th>
+					<th style="width:10%">url</th>
+					<th style="width:40%">caption</th>
+					<th style="">co-occurrence-words</th>
+					<th style="width:10%">count</th>
+				</tr>
+			</thead>
+			<tbody id="searchlistbody">
+				
+			</tbody>
+		</table>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+    function isEmptyObject(obj){
+        for (var n in obj) {
+            return false
+        }
+        return true; 
+    } 
+    function showdatalist(data){
+		$("#searchlistbody").html("");
+		for(var i=0;i< data.length;i++){
+            if(isEmptyObject(data[i]) !=true){
+                var trc = $('<td>'+data[i].PMCID+'</td><td>'+data[i].url+'</td><td>'+ data[i].caption +'</td><td>'+ data[i]['co-occurrence-words'] +'</td><td>'+data[i]['co-occurrence-count']+'</td>');
+			    //var tr = $("<td></td>")
+			    //var li = $("<td>abc</td>");
+			    $("#searchlistbody").append($("<tr></tr>").append(trc));
+			    //$("#userlistbody > tr").append(td_id);
+            }
+			
+		}
+	}
+    function get_users_query(){
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url: 'data.json',
+            success : function(data) {
+                if(data.length>0){
+                    $('#divJson').show();
+                    $('#searchtitle').hide();
+                    showdatalist(data); 
+                }
+                
+            } 
+        });
+    }
+    $('#divJson').hide();
+    $('#searchtitle').hide();
+    get_users_query();
+    $("#searchbtn").click(function(){
+		var search = $("input[name='searchinput']").val();
+        if(search == '' || search == undefined){
+            alert("search content is null!");
+            return;
+        }
+        $.ajax({
+            type : 'GET',
+            dataType : 'json',
+            url: 'data.json',
+            success : function(data) {
+                console.log(search);
+                var sres = []
+                for(var i=0;i<data.length;i++){
+                    if(isEmptyObject(data[i]) !=true){
+                        if(data[i]['PMCID'].indexOf(search)>-1 || data[i]['url'].indexOf(search)>-1 || data[i]['caption'].indexOf(search)>-1 || data[i]['co-occurrence-words'].indexOf(search)>-1){
+                            sres.push(data[i]);
+                        }
+                    }
+                    
+                }
+                $('#divJson').show();
+                $('#searchtitle').show();
+                showdatalist(sres); 
+                
+                
+            } 
+        });
+	});
+    $("#showbtn").click(function(){
+        $('#divJson').hide();
+        $('#searchtitle').hide();
+        get_users_query();
+    });
+    
+
+
+
+</script>
+
+
+
+
+</body>
+
+</html>
