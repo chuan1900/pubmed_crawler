@@ -7,7 +7,7 @@ import json
 index = 0
 headers = {'referer': 'https://eutils.ncbi.nlm.nih.gov', 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:47.0) Gecko/20100101 Firefox/47.0'}
 
-# same images
+# save images
 def save_info(res_url,pmccode):
     global index
     html = ''
